@@ -58,6 +58,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHoder> {
                         bundle.putString("link",link);
                         bundle.putString("title",photo.getTitle());
                         bundle.putString("views",photo.getViews());
+                        bundle.putInt("widthM", photo.getWidthM());
+                        bundle.putInt("heightM",photo.getHeightC());
+                        bundle.putInt("widthSq", photo.getWidthSq());
+                        bundle.putInt("heightSq",photo.getHeightSq());
+                        bundle.putInt("widthL", photo.getWidthL());
+                        bundle.putInt("heightL",photo.getHeightL());
                         Intent intent=new Intent(context, DetailsActivity.class);
                         intent.putExtras(bundle);
                         ActivityOptionsCompat activityOptionsCompat=ActivityOptionsCompat.makeSceneTransitionAnimation
@@ -84,9 +90,4 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHoder> {
         return photoList.size();
     }
 
-    public void updatelist(List<Photo> newlist){
-        photoList=new ArrayList<>();
-        photoList.addAll(newlist);
-        notifyDataSetChanged();
-    }
 }

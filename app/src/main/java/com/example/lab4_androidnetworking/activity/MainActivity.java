@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     ImageAdapter imageAdapter;
 
     private RecyclerView rvList;
+
     private SwipeRefreshLayout swFresh;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
 
@@ -76,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 rvList.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
                     @Override
                     public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                        MainActivity.this.page++;
-                        loadImage(MainActivity.this.page++);
+                        MainActivity.this.page=page;
+                        loadImage(page+1);
                     }
                 });
             }
@@ -85,13 +86,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         rvList.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                MainActivity.this.page++;
-                loadImage(MainActivity.this.page++);
+
+                    MainActivity.this.page=page;
+                    Log.e("page",page+"");
+                    loadImage(page+1);
+
+
 
             }
         });
-
-
 
     }
 
@@ -128,9 +131,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void searchImage(int page,String text){
-        if (text== null){
-            Toast.makeText(this, "Bạn chưa nhập gì à", Toast.LENGTH_SHORT).show();
-        }else {
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.flickr.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             }
         });
-        }
+
 
     }
     @Override
