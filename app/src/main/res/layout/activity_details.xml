@@ -132,6 +132,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:background="#FFFFFF"
         android:id="@+id/rvListComment"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -162,6 +163,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
+        android:onClick="addComment"
         android:id="@+id/imgSend"
         android:layout_width="61dp"
         android:layout_height="44dp"

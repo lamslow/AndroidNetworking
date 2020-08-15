@@ -55,6 +55,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHoder> {
                     @Override
                     public void onClick(View v) {
                         Bundle bundle=new Bundle();
+                        bundle.putString("photo_id",photo.getId());
                         bundle.putString("link",link);
                         bundle.putString("title",photo.getTitle());
                         bundle.putString("views",photo.getViews());

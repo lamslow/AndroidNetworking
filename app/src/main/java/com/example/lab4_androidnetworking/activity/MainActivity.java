@@ -3,6 +3,7 @@ package com.example.lab4_androidnetworking.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -21,6 +22,7 @@ import com.example.lab4_androidnetworking.R;
 import com.example.lab4_androidnetworking.model.Example;
 import com.example.lab4_androidnetworking.model.Photo;
 import com.example.lab4_androidnetworking.sevice.SearchService;
+import com.google.android.material.theme.MaterialComponentsViewInflater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,13 +82,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         rvList.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-
-                    MainActivity.this.page=page;
+                    MainActivity.this.page++;
                     Log.e("page",page+"");
-                    loadImage(page+1);
-
-
-
+                    loadImage(MainActivity.this.page);
             }
         });
 
@@ -182,22 +180,27 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        list=new ArrayList<>();
-        imageAdapter = new ImageAdapter(MainActivity.this, list);
-        staggeredGridLayoutManager=new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
-        rvList.setLayoutManager(staggeredGridLayoutManager);
-        rvList.setAdapter(imageAdapter);
-        rvList.setItemAnimator(null);
-        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-        rvList.getRecycledViewPool().clear();
-        list.clear();
         String text=newText.toLowerCase().trim();
         if (text.length()==0){
             Toast.makeText(this, "Bạn chưa điền gì", Toast.LENGTH_SHORT).show();
         }else {
+            list=new ArrayList<>();
+            imageAdapter = new ImageAdapter(MainActivity.this, list);
+            staggeredGridLayoutManager=new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+            rvList.setLayoutManager(staggeredGridLayoutManager);
+            rvList.setAdapter(imageAdapter);
+            rvList.setItemAnimator(null);
+            staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+            rvList.getRecycledViewPool().clear();
+            list.clear();
             searchImage(pageSearch,text);
+
+
+
         }
 
         return true;
     }
+
+
 }
