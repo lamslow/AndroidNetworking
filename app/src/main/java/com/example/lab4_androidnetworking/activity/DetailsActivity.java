@@ -38,7 +38,7 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-
+        setTitle("Detail Photo");
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager=CallbackManager.Factory.create();
         shareDialog=new ShareDialog(this);

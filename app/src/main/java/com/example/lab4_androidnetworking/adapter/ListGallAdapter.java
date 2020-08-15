@@ -3,6 +3,7 @@ package com.example.lab4_androidnetworking.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +16,16 @@ import com.example.lab4_androidnetworking.activity.DetailGalActivity;
 import com.example.lab4_androidnetworking.hoder.GalleryHoder;
 import com.example.lab4_androidnetworking.model.Gallery;
 import com.example.lab4_androidnetworking.model.Title;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class ListGallAdapter extends RecyclerView.Adapter<GalleryHoder> {
     Context context;
-    List<Title> list;
     List<Gallery> galleryList;
 
-    public ListGallAdapter(Context context, List<Title> list,List<Gallery> galleryList) {
+    public ListGallAdapter(Context context,List<Gallery> galleryList) {
         this.context = context;
-        this.list = list;
         this.galleryList=galleryList;
     }
 
@@ -39,9 +39,12 @@ public class ListGallAdapter extends RecyclerView.Adapter<GalleryHoder> {
 
     @Override
     public void onBindViewHolder(@NonNull GalleryHoder holder, int position) {
-        Title title=list.get(position);
+
         Gallery gallery=galleryList.get(position);
-        holder.tvTitleGal.setText(title.getContent());
+        holder.tvTitleGal.setText(gallery.getTitle().getContent());
+        String linkk=gallery.getPrimaryPhotoExtras().getUrlM();
+        Log.e("Link",linkk+"");
+        Picasso.get().load(linkk).into(holder.imgGal);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +59,6 @@ public class ListGallAdapter extends RecyclerView.Adapter<GalleryHoder> {
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return galleryList.size();
     }
 }

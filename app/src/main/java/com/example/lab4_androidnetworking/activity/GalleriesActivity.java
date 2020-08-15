@@ -3,10 +3,12 @@ package com.example.lab4_androidnetworking.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.lab4_androidnetworking.model.Galleries;
 import com.example.lab4_androidnetworking.sevice.AlbumSevice;
 import com.example.lab4_androidnetworking.adapter.ListGallAdapter;
 import com.example.lab4_androidnetworking.R;
@@ -31,16 +33,34 @@ public class GalleriesActivity extends AppCompatActivity {
     private static final String KEY_TOKEN = "438781d8ef97e68c76a04d5be78b7361";
     private static final String GET_GALL = "flickr.galleries.getList";
     private int page = 0;
-    private List<PrimaryPhotoExtras> primaryPhotoExtrasList;
-    private List<Title> titleList;
+    ListGallAdapter listGallAdapter;
     private List<Gallery> galleryList;
+
+    private SwipeRefreshLayout spFreshFav;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_galleries);
+        setTitle("My Galleries");
         rvListGall=findViewById(R.id.rvListGall);
-
+        spFreshFav=findViewById(R.id.spFreshFav);
+        galleryList=new ArrayList<>();
+        listGallAdapter=new ListGallAdapter(this,galleryList);
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+        rvListGall.setAdapter(listGallAdapter);
+        rvListGall.setLayoutManager(linearLayoutManager);
+        galleryList.clear();
         loadImage(page);
+
+        spFreshFav.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                GalleriesActivity.this.page=1;
+                galleryList.clear();
+                listGallAdapter.notifyDataSetChanged();
+                loadImage(page);
+            }
+        });
     }
 
     private void loadImage(int page){
@@ -55,26 +75,10 @@ public class GalleriesActivity extends AppCompatActivity {
                 20).enqueue(new Callback<ExampleGall>() {
             @Override
             public void onResponse(Call<ExampleGall> call, Response<ExampleGall> response) {
-                //          swFresh.setRefreshing(false);
-                primaryPhotoExtrasList=new ArrayList<>();
-                titleList=new ArrayList<>();
-                galleryList=new ArrayList<>();
-                int count=response.body().getGalleries().getTotal();
-                for (int i=0;i<count;i++){
-                    Title title=new Title();
-                    PrimaryPhotoExtras primaryPhotoExtras=new PrimaryPhotoExtras();
-                    Gallery gallery=new Gallery();
-                    title.setContent(response.body().getGalleries().getGallery().get(i).getTitle().getContent());
-                    Log.e("abc",response.body().getGalleries().getGallery().get(i).getTitle().getContent()+"") ;
-                   //primaryPhotoExtras.setUrlM(response.body().getGalleries().getGallery().get(i).getPrimaryPhotoExtras().getUrlM());
-                    gallery.setGalleryId(response.body().getGalleries().getGallery().get(i).getGalleryId());
-                    galleryList.add(gallery);
-                    titleList.add(title);
-                }
-                ListGallAdapter listGallAdapter=new ListGallAdapter(GalleriesActivity.this,titleList,galleryList);
-                LinearLayoutManager linearLayoutManager=new LinearLayoutManager(GalleriesActivity.this);
-                rvListGall.setAdapter(listGallAdapter);
-                rvListGall.setLayoutManager(linearLayoutManager);
+                spFreshFav.setRefreshing(false);
+                List<Gallery> galleries=response.body().getGalleries().getGallery();
+                galleryList.addAll(galleries);
+                listGallAdapter.notifyDataSetChanged();
 
             }
 

@@ -3,6 +3,7 @@ package com.example.lab4_androidnetworking.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -28,18 +29,54 @@ public class DetailGalActivity extends AppCompatActivity {
     private static final String KEY_TOKEN = "438781d8ef97e68c76a04d5be78b7361";
     private static final String GET_PHOTO_IN_GAL = "flickr.galleries.getPhotos";
     private int page = 0;
+    StaggeredGridLayoutManager staggeredGridLayoutManager;
+    ImageGalAdapter imageGalAdapter;
     String galleries_ID;
     List<PhotoGal> photoGalList;
     RecyclerView rvListImgGal;
+    private SwipeRefreshLayout spFreshPhotoFav;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_gal);
+        setTitle("My Detail Galleries");
         rvListImgGal=findViewById(R.id.rvListImgGal);
+        spFreshPhotoFav=findViewById(R.id.spFreshPhotoFav);
         Bundle bundle= getIntent().getExtras();
         galleries_ID=bundle.getString("galleries_key");
-        Log.e("AAAA",galleries_ID+"");
+        photoGalList=new ArrayList<>();
+        imageGalAdapter=new ImageGalAdapter(this,photoGalList);
+        staggeredGridLayoutManager=new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        rvListImgGal.setAdapter(imageGalAdapter);
+        rvListImgGal.setLayoutManager(staggeredGridLayoutManager);
+        rvListImgGal.setItemAnimator(null);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        rvListImgGal.getRecycledViewPool().clear();
+        photoGalList.clear();
+
         loadDetailGal(page);
+
+        spFreshPhotoFav.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                DetailGalActivity.this.page=1;
+                photoGalList.clear();
+                imageGalAdapter.notifyDataSetChanged();
+                loadDetailGal(DetailGalActivity.this.page);
+            }
+        });
+
+        rvListImgGal.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                DetailGalActivity.this.page=page;
+                Log.e("page",page+"");
+                loadDetailGal(page+1);
+
+
+
+            }
+        });
     }
     private void loadDetailGal(int page){
         Retrofit retrofit = new Retrofit.Builder()
@@ -53,18 +90,10 @@ public class DetailGalActivity extends AppCompatActivity {
                 KEY_TOKEN,GET_PHOTO_IN_GAL,page,20).enqueue(new Callback<ExampleGal>() {
             @Override
             public void onResponse(Call<ExampleGal> call, Response<ExampleGal> response) {
-                photoGalList=new ArrayList<>();
-                int count1=(response.body().getPhotos().getTotal());
-                for (int i = 0; i < count1; i++) {
-                    PhotoGal photoGal=new PhotoGal();
-                    photoGal.setUrlM(response.body().getPhotos().getPhoto().get(i).getUrlM());
-                    photoGal.setViews(response.body().getPhotos().getPhoto().get(i).getViews());
-                    photoGalList.add(photoGal);
-                }
-                ImageGalAdapter imageGalAdapter=new ImageGalAdapter(DetailGalActivity.this,photoGalList);
-                rvListImgGal.setAdapter(imageGalAdapter);
-                StaggeredGridLayoutManager staggeredGridLayoutManager=new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
-                rvListImgGal.setLayoutManager(staggeredGridLayoutManager);
+                spFreshPhotoFav.setRefreshing(false);
+                List<PhotoGal> photoGals=response.body().getPhotos().getPhoto();
+                photoGalList.addAll(photoGals);
+                imageGalAdapter.notifyDataSetChanged();
             }
 
             @Override

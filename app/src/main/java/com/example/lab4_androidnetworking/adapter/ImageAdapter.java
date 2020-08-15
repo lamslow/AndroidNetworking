@@ -59,7 +59,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHoder> {
                         bundle.putString("title",photo.getTitle());
                         bundle.putString("views",photo.getViews());
                         bundle.putInt("widthM", photo.getWidthM());
-                        bundle.putInt("heightM",photo.getHeightC());
+                        bundle.putInt("heightM",photo.getHeightM());
                         bundle.putInt("widthSq", photo.getWidthSq());
                         bundle.putInt("heightSq",photo.getHeightSq());
                         bundle.putInt("widthL", photo.getWidthL());
@@ -74,7 +74,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageHoder> {
 
                 ConstraintSet constraintSet =new ConstraintSet();
 
-                String imageRatio = String.format("%d:%d",photo.getWidthS(),photo.getHeightS());
+                String imageRatio = String.format("%d:%d",photo.getWidthM(),photo.getHeightM());
                 constraintSet.clone(holder.constraintLayout);
                 constraintSet.setDimensionRatio(holder.imgFlickr.getId(), imageRatio);
                 constraintSet.applyTo(holder.constraintLayout);

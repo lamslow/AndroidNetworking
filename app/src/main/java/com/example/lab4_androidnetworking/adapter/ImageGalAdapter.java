@@ -1,11 +1,14 @@
 package com.example.lab4_androidnetworking.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lab4_androidnetworking.R;
@@ -37,6 +40,12 @@ public class ImageGalAdapter extends RecyclerView.Adapter<ImageGalHoder> {
             PhotoGal photoGal=list.get(position);
             String link=photoGal.getUrlM();
         Picasso.get().load(link).into(holder.imgGalleries);
+
+//        ConstraintSet constraintSet1 =new ConstraintSet();
+//        String imageRatio=String.format("%d:%d",photoGal.getWidthM(),photoGal.getHeightM());
+//        constraintSet1.clone(holder.constraintLayout2);
+//        constraintSet1.setDimensionRatio(holder.imgGalleries.getId(), imageRatio);
+//        constraintSet1.applyTo(holder.constraintLayout2);
     }
 
     @Override

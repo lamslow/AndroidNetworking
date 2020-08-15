@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,11 +34,14 @@ public class FacebookActivity extends AppCompatActivity {
     CallbackManager callbackManager;
     TextView tvData;
     GraphRequest graphRequest;
+    private ImageView imgAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facebook);
+        setTitle("Facebook Login");
+        imgAvatar=findViewById(R.id.imgAvatar);
         FacebookSdk.sdkInitialize(getApplicationContext());
         tvData=findViewById(R.id.tvData);
 
@@ -80,6 +85,8 @@ public class FacebookActivity extends AppCompatActivity {
         Profile profile=Profile.getCurrentProfile();
         if (profile!=null){
             String name=profile.getName();
+            String pic_profile= profile.getProfilePictureUri(120,100).toString();
+            Picasso.get().load(pic_profile).into(imgAvatar);
             tvData.setText(name);
         }
         graphRequest=GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {

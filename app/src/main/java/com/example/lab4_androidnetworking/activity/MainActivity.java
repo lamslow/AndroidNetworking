@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("My Favorites");
         rvList = (RecyclerView) findViewById(R.id.rvList);
         swFresh=findViewById(R.id.spFresh);
 
@@ -74,13 +75,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             list.clear();
             imageAdapter.notifyDataSetChanged();
             loadImage(MainActivity.this.page);
-                rvList.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
-                    @Override
-                    public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                        MainActivity.this.page=page;
-                        loadImage(page+1);
-                    }
-                });
             }
         });
         rvList.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
@@ -145,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<Example> call, Response<Example> response) {
                 swFresh.setRefreshing(false);
                 if (Integer.parseInt(response.body().getPhotos().getTotal()) ==0){
-
                     List<Photo> photos=new ArrayList<>();
                     list.addAll(photos);
                     imageAdapter.notifyDataSetChanged();
@@ -178,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         SearchView searchView= (SearchView) menuItem.getActionView();
         searchView.setOnQueryTextListener(this);
         return true;
+
 
     }
 

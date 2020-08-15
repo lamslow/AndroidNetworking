@@ -9,7 +9,7 @@ import retrofit2.http.Query;
 
 public interface AlbumSevice {
     @GET("services/rest/")
-    Call<ExampleGall> getListGall(@Query("extras") String extras,
+    Call<ExampleGall> getListGall(@Query("primary_photo_extras") String extras,
                                   @Query("nojsoncallback") String nojsoncallback,
                                   @Query("user_id") String user_id,
                                   @Query("format") String format,
